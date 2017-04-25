@@ -1,0 +1,83 @@
+class ListStack:
+    def __init__(self,name_ABC,num_blocks=0):
+        self.name=name_ABC
+        if num_blocks!=0:
+            self.l_block=[i for i in range(num_blocks,0,-1)]
+        else:
+            self.l_block=[]
+
+    def name(self):
+        return self.name
+
+    def __len__(self):
+        return len(self.l_block)
+
+    def is_empty(self):
+        return len(self.l_block)==0
+
+    def push(self,e):
+        self.l_block.append(e)
+        return self.l_block
+
+    def top(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.l_block[self.__len__()-1]#method套method这个括号为啥可以不加self?
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.l_block.pop()
+
+#先找移动谁
+def WhoMove(package):#input应该是除了前一块的目的地之外的两个打包[A,B]AB都是stack 有attribution
+    moved_block=package[0].top(),package[0].name#想得到一个两个元素的list,其中含有本次要移动的那个block原本的ABC和大小编号，反正就两个先假设一个
+    if moved_block[0]!=None:#如果这根上有东西，就可以开始比较啦
+        if package[1].top() and moved_block[0]>package[1].top():#根据观察发现，1、两根上多的移动 2、一样多则小的移动
+            moved_block=package[1].top(),package[1].name
+            package[1].pop()
+        else:
+            package[0].pop()
+    else:
+        moved_block=package[1].top(),package[1].name#如果第一个空，就肯定是它了
+        package[1].pop()
+    return moved_block
+
+
+#找它到哪里去：
+def WhereNext(size_block,nameabc):
+    if num_blocks%2==0:
+        rule={'a':'b','b':'c','c':'a'}
+    elif num_blocks%2!=0:
+        rule={'a':'c','c':'b','b':'a'}#找规律发现：1、移动之后此根空 2、移动过去的确小的在上，都是这样一一对应／只有移过去大才会变～而且正好是那个对应的再对应的ABC
+    for i in [A,B,C]:
+        if i.name==rule[nameabc]:
+            if i.top()==None:
+                return i
+            if size_block<i.top():
+                return i
+            return find(rule[i.name])
+
+def find(a):
+    for i in [A,B,C]:
+        if i.name==a:
+            return i
+
+def HanoiTower():
+    S=[A,B]
+    while C.__len__()<num_blocks:
+        moved_block=WhoMove(S)
+        wherenext=WhereNext(moved_block[0],moved_block[1])
+        wherenext.push(moved_block[0])
+        S=[A,B,C]
+        S.remove(wherenext)#刚移动的block，下一步肯定不会移动
+        print ('%c --> %c,\tsize %d'%(moved_block[1],wherenext.name,moved_block[0]))
+
+if __name__=='__main__':
+    num_blocks=int(input('how many disks: '))
+    A=ListStack('a',num_blocks)
+    B=ListStack('b')
+    C=ListStack('c')
+    HanoiTower()
